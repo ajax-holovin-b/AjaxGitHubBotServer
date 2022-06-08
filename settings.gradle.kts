@@ -1,1 +1,1 @@
-rootProject.name = "GitHubForBotTester"
+rootProject.name = "AjaxGitHubBot"

@@ -26,11 +26,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5") { exclude("io.jsonwebtoken", "jjwt-api") }
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5") { exclude("io.jsonwebtoken", "jjwt-api") }
-
-    // https://mvnrepository.com/artifact/com.spotify/github-client
-    implementation("com.spotify:github-client:0.1.33")
-
-
 }
 
 tasks.withType<KotlinCompile> {

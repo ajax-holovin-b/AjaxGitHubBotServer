@@ -1,0 +1,22 @@
+
+// check jwt_token
+curl -i -X GET \
+-H "Authorization: Bearer JWT_TOKEN" \
+-H "Accept: application/vnd.github.v3+json" \
+https://api.github.com/app/installations
+
+// get access_token_url
+curl -i -X POST \
+-H "Authorization: Bearer JWT_TOKEN" \
+-H "Accept: application/vnd.github.v3+json" \
+https://api.github.com/app/installations/26353808/access_tokens
+
+// get installation token
+curl -i \
+-H "Authorization: token ghs_sw8oAb4SjjArc09Pu9uyIyJPse9Vac1Ne5UV" \
+-H "Accept: application/vnd.github.v3+json" \
+https://api.github.com/installation/repositories
+
+
+
+
