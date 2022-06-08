@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class AjaxGitHubBot
+class AjaxGitHubBotServer
 
 fun main(args: Array<String>) {
-    val runApplication = runApplication<AjaxGitHubBot>(*args)
+    val runApplication = runApplication<AjaxGitHubBotServer>(*args)
     val pullRequestChecker = runApplication.getBean<PullRequestChecker>()
     pullRequestChecker.check()
 }
