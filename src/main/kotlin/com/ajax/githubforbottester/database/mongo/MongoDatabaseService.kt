@@ -23,7 +23,7 @@ class MongoDatabaseService(
     }
 
     override fun getLogin(chatId: Long): String? {
-        val optional = repository.findById(chatId)
+        val optional = repository.findByChatId(chatId)
         return if (optional.isPresent) {
             optional.get().gitHubLogin
         } else {
