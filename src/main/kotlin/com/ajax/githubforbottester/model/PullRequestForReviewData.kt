@@ -1,7 +1,7 @@
 package com.ajax.githubforbottester.model
 
 data class PullRequestForReviewData(
-    val email: String,
+    val login: String,
     val repos: String,
-    val pullRequest: String
+    val pullRequestUrl: String
 )

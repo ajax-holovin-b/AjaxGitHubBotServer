@@ -1,6 +1,8 @@
 package com.ajax.githubforbottester.telegram
 
+import com.ajax.githubforbottester.github.Database
 import com.ajax.githubforbottester.github.PullRequestService
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -11,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 @Component
 class TelegramBot(
     private val pullRequestService: PullRequestService,
+    private val database: Database,
     private val defaultBotOptions: DefaultBotOptions
 ) : TelegramLongPollingBot(defaultBotOptions) {
 
@@ -32,23 +35,28 @@ class TelegramBot(
             val messageWords = message.text.split(" ")
 
             when (messageWords[0]) {
-                "/set_email" -> {
-                    val email = messageWords[1]
-
-                    pullRequestService.setEmail(message.chatId, email)
+                "/set_login" -> {
+                    val textToSend = when (messageWords.size == 2) {
+                        true -> {
+                            val login = messageWords[1]
+                            database.setLogin(message.chatId, login)
+                            "Login set to $login"
+                        }
+                        false -> "You entered the command incorrectly"
+                    }
 
                     val sendMessage = SendMessage.builder()
                         .chatId(message.chatId.toString())
-                        .text("Email set to $email")
+                        .text(textToSend)
                         .build()
 
                     execute(sendMessage)
                 }
-                "/get_current_email" -> {
-                    val emailCurrent = pullRequestService.getEmail(message.chatId)
-                    val textToSend = when (emailCurrent != null) {
-                        true -> emailCurrent
-                        false -> "You don`t have any email in bot"
+                "/get_current_login" -> {
+                    val loginCurrent = database.getLogin(message.chatId)
+                    val textToSend = when (loginCurrent != null) {
+                        true -> loginCurrent
+                        false -> "You don`t have any login in bot"
                     }
 
                     val sendMessage = SendMessage.builder()
@@ -59,10 +67,20 @@ class TelegramBot(
                     execute(sendMessage)
                 }
                 "/get_review_requests" -> {
-                    val emailCurrent = pullRequestService.getEmail(message.chatId)
-                    val textToSend = when (emailCurrent != null) {
-                        true -> pullRequestService.checkReviewRequests().toString()
-                        false -> "You don`t register email in bot"
+                    val loginCurrent = database.getLogin(message.chatId)
+                    val textToSend = when (loginCurrent != null) {
+                        true -> {
+                            pullRequestService.checkReviewRequests(loginCurrent)
+                                .map { pullRequestForReviewData ->
+                                    """
+                                        login = ${pullRequestForReviewData.login}
+                                        repos = ${pullRequestForReviewData.repos}
+                                        request review url = ${pullRequestForReviewData.pullRequestUrl}
+                                    """.trimIndent()
+                                }
+                                .toString()
+                        }
+                        false -> "You don`t register login in bot"
                     }
 
                     val sendMessage = SendMessage.builder()
@@ -73,6 +91,28 @@ class TelegramBot(
                     execute(sendMessage)
                 }
             }
+        }
+    }
+
+    @Scheduled(cron = "00 30 09 * * ?", zone = "GMT+3")
+    private fun dailyAlarm() {
+        database.getAllMap().forEach { (chatId, login) ->
+            val textToSend = pullRequestService.checkReviewRequests(login)
+                .map { pullRequestForReviewData ->
+                    """
+                        login = ${pullRequestForReviewData.login}
+                        repos = ${pullRequestForReviewData.repos}
+                        request review url = ${pullRequestForReviewData.pullRequestUrl}
+                    """.trimIndent()
+                }
+                .toString()
+
+            val sendMessage = SendMessage.builder()
+                .chatId(chatId.toString())
+                .text(textToSend)
+                .build()
+
+            execute(sendMessage)
         }
     }
 }

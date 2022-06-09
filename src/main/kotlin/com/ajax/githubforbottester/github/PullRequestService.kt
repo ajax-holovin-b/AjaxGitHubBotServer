@@ -10,17 +10,7 @@ import java.io.File
 @Component
 class PullRequestService {
 
-    val mapIdEmail = mutableMapOf<Long, String>()
-
-    fun setEmail(id: Long, email: String) {
-        mapIdEmail[id] = email
-    }
-
-    fun getEmail(id: Long): String? {
-        return mapIdEmail[id]
-    }
-
-    fun checkReviewRequests(): List<PullRequestForReviewData> {
+    fun checkReviewRequests(login: String): List<PullRequestForReviewData> {
 
         val jwtToken = JWTTokenProvider(
             "208864",
@@ -47,14 +37,15 @@ class PullRequestService {
                     .map { pullRequest ->
                         pullRequest.requestedReviewers
                             .map {
-                                pullRequestForReviewDataList.add(
-                                    PullRequestForReviewData(
-                                        it.login,
-                                        pullRequest.repository.name,
-                                        pullRequest.htmlUrl.toString()
+                                if (it.login == login) {
+                                    pullRequestForReviewDataList.add(
+                                        PullRequestForReviewData(
+                                            it.login,
+                                            pullRequest.repository.name,
+                                            pullRequest.htmlUrl.toString()
+                                        )
                                     )
-                                )
-
+                                }
                             }
                     }
             }
