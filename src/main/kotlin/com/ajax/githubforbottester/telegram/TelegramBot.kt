@@ -1,6 +1,6 @@
 package com.ajax.githubforbottester.telegram
 
-import com.ajax.githubforbottester.github.Database
+import com.ajax.githubforbottester.database.Database
 import com.ajax.githubforbottester.github.PullRequestService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

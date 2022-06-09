@@ -1,0 +1,5 @@
+spring:
+    data:
+        mongodb:
+            uri: mongodb://local-mongo-usr:local-mongo-pwd@localhost:27017/chatId_gitHubLogin?authSource=admin
+            database: chatId_gitHubLogin

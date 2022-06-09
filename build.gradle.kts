@@ -34,6 +34,9 @@ dependencies {
 
     // telegram
     implementation("org.telegram:telegrambots-spring-boot-starter:6.0.1")
+
+    // mongo
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.6.7")
 }
 
 tasks.withType<KotlinCompile> {

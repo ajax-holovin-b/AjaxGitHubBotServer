@@ -1,6 +1,6 @@
 package com.ajax.githubforbottester.github
 
-import com.ajax.githubforbottester.model.PullRequestForReviewData
+import com.ajax.githubforbottester.telegram.model.PullRequestForReviewData
 import org.kohsuke.github.GHIssueState
 import org.kohsuke.github.GitHubBuilder
 import org.kohsuke.github.extras.authorization.JWTTokenProvider

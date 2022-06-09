@@ -1,4 +1,4 @@
-package com.ajax.githubforbottester.model
+package com.ajax.githubforbottester.telegram.model
 
 data class PullRequestForReviewData(
     val login: String,
